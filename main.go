@@ -36,9 +36,13 @@ func main() {
 	))
 
 	hw := func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		t := time.Now()
-		ph.Observe(float64(time.Since(t).Milliseconds()))
 		w.Write([]byte("Hello world"))
+		ph.Observe(float64(time.Since(t).Milliseconds()))
 	}
 
 	http.Handle("/metrics", promhttp.HandlerFor(hwReg, promhttp.HandlerOpts{Registry: hwReg}))
