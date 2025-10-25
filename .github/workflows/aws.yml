@@ -1,0 +1,28 @@
+name: Deploy to Amazon EC2
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    environment: prod
+
+    steps:
+      - name: SSH into ec2 instance
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo docker container stop hello-app || true
+            sudo docker rm hello-app || true
+            cd nh-web-app
+            git pull
+            sudo docker build -t hello-web-app .
+            sudo docker run --name hello-app -p 80:3000 -d hello-web-app
