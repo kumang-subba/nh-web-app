@@ -36,11 +36,11 @@ func main() {
 	))
 
 	hw := func(w http.ResponseWriter, r *http.Request) {
+		t := time.Now()
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
-		t := time.Now()
 		w.Write([]byte("Hello world"))
 		ph.Observe(float64(time.Since(t).Milliseconds()))
 	}
