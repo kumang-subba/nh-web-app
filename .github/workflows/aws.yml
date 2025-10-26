@@ -20,9 +20,17 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo docker container stop hello-app 2>/dev/null
-            sudo docker rm hello-app 2>/dev/null
-            cd nh-web-app
+            cname=hello-app
+            iname=hello-web-app-img
+            dname=nh-web-app
+            sudo docker container stop $cname 2>/dev/null
+            sudo docker rm $cname 2>/dev/null
+            if [ ! -d $dname ]; then
+              echo "$dname does not exist."
+              git clone https://github.com/kumang-subba/nh-web-app
+            fi
+            cd $dname
             git pull
-            sudo docker build -t hello-web-app .
-            sudo docker run --name hello-app -p 80:3000 -d hello-web-app
+            sudo docker image prune -f
+            sudo docker build -t $iname .
+            sudo docker run --name $cname -p 80:3000 -d $iname
