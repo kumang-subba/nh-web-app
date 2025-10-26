@@ -20,8 +20,8 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo docker container stop hello-app || true
-            sudo docker rm hello-app || true
+            sudo docker container stop hello-app 2>/dev/null
+            sudo docker rm hello-app 2>/dev/null
             cd nh-web-app
             git pull
             sudo docker build -t hello-web-app .
